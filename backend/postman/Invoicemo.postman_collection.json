@@ -1,0 +1,608 @@
+{
+	"info": {
+		"name": "Invoicemo Ultimate API",
+		"description": "Category-wise collection covering every single endpoint with pre-configured request bodies for rapid testing. Organized into System, Auth, Invoices, and Templates folders.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. System",
+			"description": "System health and infrastructure status",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/health",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Basic liveness check."
+					}
+				},
+				{
+					"name": "Readiness Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/ready",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"ready"
+							]
+						},
+						"description": "Database connection status check."
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Auth",
+			"description": "Authentication and User Management",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.data && jsonData.data.accessToken) {",
+									"    pm.collectionVariables.set(\"token\", jsonData.data.accessToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "Exchanges refresh cookie for a new access token."
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					}
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/forgot-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"forgot-password"
+							]
+						}
+					}
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"password\": \"NewPassword123!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/reset-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						}
+					}
+				},
+				{
+					"name": "Verify Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/verify-email/{{verifyToken}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"verify-email",
+								"{{verifyToken}}"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Invoices",
+			"description": "Invoice creation, tracking and retrieval",
+			"item": [
+				{
+					"name": "List Invoices",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoices?page=1&limit=20&status=published",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "status",
+									"value": "published"
+								},
+								{
+									"key": "includeDeleted",
+									"value": "false",
+									"disabled": true
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Invoice",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.data && jsonData.data._id) {",
+									"    pm.collectionVariables.set(\"invoiceId\", jsonData.data._id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"template\": \"classic\",\n  \"fontFamily\": \"Inter\",\n  \"colorScheme\": \"blue\",\n  \"lineItems\": [\n    {\n      \"description\": \"Frontend Consultation\",\n      \"qty\": 10,\n      \"rate\": 150,\n      \"amount\": 1500\n    },\n    {\n      \"description\": \"Backend Maintenance\",\n      \"qty\": 5,\n      \"rate\": 200,\n      \"amount\": 1000\n    }\n  ],\n  \"subtotal\": 2500,\n  \"taxRate\": 18,\n  \"taxAmount\": 450,\n  \"total\": 2950,\n  \"currency\": \"USD\",\n  \"signature\": {\n    \"type\": \"font\",\n    \"value\": \"John Doe\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/invoices",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoices/{{invoiceId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices",
+								"{{invoiceId}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"colorScheme\": \"slate\",\n  \"taxRate\": 20,\n  \"total\": 3000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/invoices/{{invoiceId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices",
+								"{{invoiceId}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"published\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/invoices/{{invoiceId}}/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices",
+								"{{invoiceId}}",
+								"status"
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoices/{{invoiceId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices",
+								"{{invoiceId}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Restore Invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoices/{{invoiceId}}/restore",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices",
+								"{{invoiceId}}",
+								"restore"
+							]
+						}
+					}
+				},
+				{
+					"name": "Download Invoice Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoices/{{invoiceId}}/download",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices",
+								"{{invoiceId}}",
+								"download"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Templates",
+			"description": "Available design templates",
+			"item": [
+				{
+					"name": "List Templates",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/templates",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"templates"
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://localhost:5001",
+			"type": "string"
+		},
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5001/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "invoiceId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "resetToken",
+			"value": "REPLACE_WITH_ACTUAL_TOKEN",
+			"type": "string"
+		},
+		{
+			"key": "verifyToken",
+			"value": "REPLACE_WITH_ACTUAL_TOKEN",
+			"type": "string"
+		}
+	]
+}

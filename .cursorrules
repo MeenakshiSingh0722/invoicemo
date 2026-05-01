@@ -1,0 +1,17 @@
+# API & Endpoint Maintenance Rule
+
+Whenever you (the AI Assistant) are asked to create, modify, or delete an API endpoint (this includes modifying routes, controllers, or database schemas), you MUST immediately and automatically update the following three files in the same turn without being explicitly asked:
+
+1. `docs/API_DOCUMENTATION.md`
+   - Update the endpoint reference.
+   - Include any new scenarios, request/response payloads, and status codes.
+
+2. `backend/postman/Invoicemo.postman_collection.json`
+   - Update or add the endpoint.
+   - Ensure a realistic JSON body payload is included if it's a POST/PUT/PATCH request.
+   - Ensure the correct HTTP method and URL variables are used.
+
+3. `backend/postman/TEST_MATRIX.md`
+   - Update the test matrix to reflect the new or modified endpoint and its expected status codes.
+
+Always run `npm run test:api` in the `backend/` directory after updating the Postman collection to verify your changes.

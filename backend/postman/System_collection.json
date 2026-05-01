@@ -1,0 +1,39 @@
+{
+  "info": {
+    "name": "Invoicemo API",
+    "description": "Comprehensive Postman Collection for Invoicemo Project Workshop.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "host", "value": "http://localhost:5001", "type": "string" },
+    { "key": "baseUrl", "value": "http://localhost:5001/api/v1", "type": "string" },
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "invoiceId", "value": "YOUR_INVOICE_ID", "type": "string" },
+    { "key": "resetToken", "value": "YOUR_RESET_TOKEN", "type": "string" },
+    { "key": "verifyToken", "value": "YOUR_VERIFY_TOKEN", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "System",
+      "description": "System health and readiness checks",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{host}}/health", "host": ["{{host}}"], "path": ["health"] }
+          }
+        },
+        {
+          "name": "Readiness Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{host}}/ready", "host": ["{{host}}"], "path": ["ready"] }
+          }
+        }
+      ]
+    }
+  ]
+}
